@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import HomePage from './pages/HomePage.jsx'
-import ProfilePage from './pages/ProfilePage.jsx'
-import SignInPage from './pages/SignInPage.jsx'
-import ProtectedRoute from './components/ProtectedRoute.jsx'
+import HomePage from './pages/HomePage/HomePage.jsx'
+import ProfilePage from './pages/ProfilePage/ProfilePage.jsx'
+import SignInPage from './pages/SignInPage/SignInPage.jsx'
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.jsx'
 import { fetchProfile } from './store/authSlice.js'
 
 export default function App() {

@@ -1,3 +1,5 @@
+import './Feature.css'
+
 export default function Feature({ image, alt, title, children }) {
   return (
     <article className="feature-item">

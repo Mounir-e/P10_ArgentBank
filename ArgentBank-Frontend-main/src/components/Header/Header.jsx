@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { logout } from '../store/authSlice.js'
+import { logout } from '../../store/authSlice.js'
 
 export default function Header() {
   const dispatch = useDispatch()
@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <nav className="main-nav" aria-label="Main navigation">
       <Link className="main-nav-logo" to="/">
-        <img className="main-nav-logo-image" src="/img/argentBankLogo.png" alt="Argent Bank" />
+        <img className="main-nav-logo-image" src="/img/argentBankLogo.webp" alt="Argent Bank" />
         <h1 className="sr-only">Argent Bank</h1>
       </Link>
       <div>

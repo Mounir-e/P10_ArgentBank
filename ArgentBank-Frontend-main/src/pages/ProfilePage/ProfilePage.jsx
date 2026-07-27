@@ -1,13 +1,14 @@
-import Account from '../components/Account.jsx'
-import Layout from '../components/Layout.jsx'
-import { useSelector } from 'react-redux'
 import { useState } from 'react'
-import UserNameForm from '../components/UserNameForm.jsx'
+import { useSelector } from 'react-redux'
+import Account from '../../components/Account/Account.jsx'
+import Layout from '../../components/Layout/Layout.jsx'
+import UserNameForm from '../../components/UserNameForm/UserNameForm.jsx'
+import './ProfilePage.css'
 
 const accounts = [
-  { title: 'Argent Bank Checking (x8349)', amount: '$2,082.79', description: 'Available Balance' },
-  { title: 'Argent Bank Savings (x6712)', amount: '$10,928.42', description: 'Available Balance' },
-  { title: 'Argent Bank Credit Card (x8349)', amount: '$184.30', description: 'Current Balance' },
+  { id: 'checking-8349', title: 'Argent Bank Checking (x8349)', amount: '$2,082.79', description: 'Available Balance' },
+  { id: 'savings-6712', title: 'Argent Bank Savings (x6712)', amount: '$10,928.42', description: 'Available Balance' },
+  { id: 'credit-8349', title: 'Argent Bank Credit Card (x8349)', amount: '$184.30', description: 'Current Balance' },
 ]
 
 export default function ProfilePage() {

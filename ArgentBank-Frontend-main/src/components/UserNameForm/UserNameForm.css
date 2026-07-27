@@ -1,0 +1,53 @@
+.edit-user-form {
+  background: white;
+  color: #2c3e50;
+  margin: 0 auto;
+  max-width: 420px;
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+.edit-user-form h2 { margin-top: 0; }
+
+.edit-user-field {
+  align-items: center;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 110px 1fr;
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+
+.edit-user-field label { font-weight: bold; }
+
+.edit-user-field input {
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.edit-user-field input:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+}
+
+.edit-user-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.edit-form-button {
+  background: #00bc77;
+  border: 1px solid #00bc77;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  min-width: 100px;
+  padding: 0.5rem 1rem;
+}
+
+.edit-form-button:disabled { cursor: wait; opacity: 0.7; }
+
+@media (max-width: 420px) {
+  .edit-user-form { margin: 0 1rem; }
+  .edit-user-field { grid-template-columns: 1fr; gap: 0.25rem; }
+}

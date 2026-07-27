@@ -1,3 +1,5 @@
+import './Account.css'
+
 export default function Account({ title, amount, description }) {
   return (
     <section className="account">

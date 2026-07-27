@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import Layout from '../components/Layout.jsx'
-import { clearError, login } from '../store/authSlice.js'
+import Layout from '../../components/Layout/Layout.jsx'
+import { clearError, login } from '../../store/authSlice.js'
+import './SignInPage.css'
 
 export default function SignInPage() {
   const dispatch = useDispatch()

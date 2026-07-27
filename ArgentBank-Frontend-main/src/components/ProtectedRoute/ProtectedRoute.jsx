@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import './ProtectedRoute.css'
 
 export default function ProtectedRoute() {
   const { token, user, status } = useSelector((state) => state.auth)

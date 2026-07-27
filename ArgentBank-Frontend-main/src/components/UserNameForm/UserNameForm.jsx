@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { clearUpdateState, updateUserName } from '../store/authSlice.js'
+import { clearUpdateState, updateUserName } from '../../store/authSlice.js'
+import './UserNameForm.css'
 
 export default function UserNameForm({ onClose }) {
   const dispatch = useDispatch()

@@ -13,6 +13,12 @@ body {
   min-height: 100vh;
 }
 
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .main {
   flex: 1;
 }
@@ -47,13 +53,19 @@ body {
   color: #2c3e50;
 }
 
-.main-nav a.router-link-exact-active {
-  color: #42b983;
-}
-
 .main-nav-item {
   text-decoration: none;
   margin-right: 0.5rem;
+}
+
+.main-nav-button {
+  border: 0;
+  background: none;
+  color: #2c3e50;
+  cursor: pointer;
+  font: inherit;
+  font-weight: bold;
+  padding: 0;
 }
 
 .main-nav-item:hover {
@@ -163,6 +175,25 @@ body {
   border-color: #00bc77;
   background-color: #00bc77;
   color: #fff;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.sign-in-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.form-error {
+  color: #b00020;
+  font-weight: bold;
+  text-align: left;
+}
+
+.loading-screen {
+  color: white;
+  padding-top: 3rem;
 }
 
 .sign-in-content {
@@ -257,6 +288,74 @@ body {
   color: #fff;
   font-weight: bold;
   padding: 10px;
+  cursor: pointer;
+}
+
+.edit-user-form {
+  background: white;
+  color: #2c3e50;
+  margin: 0 auto;
+  max-width: 420px;
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+.edit-user-form h2 {
+  margin-top: 0;
+}
+
+.edit-user-field {
+  align-items: center;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 110px 1fr;
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+
+.edit-user-field label {
+  font-weight: bold;
+}
+
+.edit-user-field input {
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.edit-user-field input:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+}
+
+.edit-user-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.edit-form-button {
+  background: #00bc77;
+  border: 1px solid #00bc77;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  min-width: 100px;
+  padding: 0.5rem 1rem;
+}
+
+.edit-form-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+@media (max-width: 420px) {
+  .edit-user-form {
+    margin: 0 1rem;
+  }
+
+  .edit-user-field {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
 }
 
 .header {
@@ -274,6 +373,7 @@ body {
   border-color: #00bc77;
   background-color: #00bc77;
   color: #fff;
+  cursor: pointer;
 }
 
 @media (min-width: 720px) {

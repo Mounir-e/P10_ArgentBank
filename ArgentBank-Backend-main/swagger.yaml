@@ -8,6 +8,15 @@ host: localhost:3001
 basePath: /api/v1
 schemes:
   - http
+consumes:
+  - application/json
+produces:
+  - application/json
+tags:
+  - name: User Module
+    description: Authentication and user profile operations
+  - name: Transaction Module
+    description: Read transactions and manage their editable metadata
 paths:
   /user/login:
     post:
@@ -65,15 +74,15 @@ paths:
         - User Module
       summary: User Profile API
       description: API for fetching a user profile
-      #produces:
-       # - application/json
       responses:
         '200':
-          description: User profile retrieved successully
+          description: User profile retrieved successfully
           schema:
-            $ref: '#/definitions/ApiResponse'
+            $ref: '#/definitions/UserProfileResponse'
         '400':
           description: Invalid Fields
+        '401':
+          description: Missing or invalid authentication token
         '500':
           description: Internal Server Error
     put:
@@ -94,13 +103,219 @@ paths:
         - application/json
       responses:
         '200':
-          description: User profile retrieved successully
+          description: User profile updated successfully
           schema:
-            $ref: '#/definitions/ApiResponse'
+            $ref: '#/definitions/UserProfileResponse'
         '400':
           description: Invalid Fields
+        '401':
+          description: Missing or invalid authentication token
         '500':
           description: Internal Server Error
+  /accounts/{accountId}/transactions:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Transaction Module
+      summary: List account transactions for a month
+      description: Returns the authenticated user's transactions for one account and one calendar month. The current month is used when month is omitted.
+      parameters:
+        - $ref: '#/parameters/AccountId'
+        - in: query
+          name: month
+          type: string
+          pattern: '^\d{4}-(0[1-9]|1[0-2])$'
+          description: Calendar month in YYYY-MM format. Defaults to the current month.
+        - in: query
+          name: page
+          type: integer
+          format: int32
+          minimum: 1
+          default: 1
+          description: Results page number.
+        - in: query
+          name: pageSize
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 100
+          default: 25
+          description: Maximum number of transactions returned per page.
+      responses:
+        '200':
+          description: Transactions retrieved successfully
+          schema:
+            $ref: '#/definitions/TransactionListResponse'
+          examples:
+            application/json:
+              status: 200
+              message: Transactions retrieved successfully
+              body:
+                account:
+                  id: checking-8349
+                  name: Argent Bank Checking
+                  maskedNumber: x8349
+                  balance: 2082.79
+                  balanceLabel: Available Balance
+                  currency: USD
+                month: '2026-07'
+                transactions:
+                  - id: transaction-001
+                    accountId: checking-8349
+                    date: '2026-07-15'
+                    description: Golden Sun Bakery
+                    amount: -8.0
+                    balance: 2082.79
+                    currency: USD
+                    type: Electronic
+                    category: Food
+                    note: Breakfast
+                  - id: transaction-002
+                    accountId: checking-8349
+                    date: '2026-07-12'
+                    description: Argent Bank Transfer
+                    amount: 750.0
+                    balance: 2090.79
+                    currency: USD
+                    type: Transfer
+                    category: Income
+                    note: Monthly transfer
+                  - id: transaction-003
+                    accountId: checking-8349
+                    date: '2026-07-08'
+                    description: Metro City Transport
+                    amount: -42.5
+                    balance: 1340.79
+                    currency: USD
+                    type: Card payment
+                    category: Transportation
+                    note: Monthly transport pass
+                  - id: transaction-004
+                    accountId: checking-8349
+                    date: '2026-07-03'
+                    description: Green Market
+                    amount: -64.2
+                    balance: 1383.29
+                    currency: USD
+                    type: Card payment
+                    category: Food
+                    note: Weekly groceries
+                pagination:
+                  page: 1
+                  pageSize: 25
+                  totalItems: 4
+                  totalPages: 1
+        '400':
+          description: Invalid account identifier, month or pagination parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: Missing or invalid authentication token
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: The authenticated user does not own this account
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '404':
+          description: Account not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /accounts/{accountId}/transactions/{transactionId}:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Transaction Module
+      summary: Get transaction details
+      description: Returns the complete details of one transaction belonging to an account owned by the authenticated user.
+      parameters:
+        - $ref: '#/parameters/AccountId'
+        - $ref: '#/parameters/TransactionId'
+      responses:
+        '200':
+          description: Transaction details retrieved successfully
+          schema:
+            $ref: '#/definitions/TransactionResponse'
+        '400':
+          description: Invalid account or transaction identifier
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: Missing or invalid authentication token
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: The authenticated user does not own this account
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '404':
+          description: Account or transaction not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    patch:
+      security:
+        - Bearer: []
+      tags:
+        - Transaction Module
+      summary: Update transaction metadata
+      description: Adds, changes or clears the editable category and note of a transaction. Financial transaction fields cannot be modified. Send null to remove a category or note.
+      parameters:
+        - $ref: '#/parameters/AccountId'
+        - $ref: '#/parameters/TransactionId'
+        - in: body
+          name: body
+          description: Editable transaction metadata. At least one property is required.
+          required: true
+          schema:
+            $ref: '#/definitions/TransactionUpdate'
+      responses:
+        '200':
+          description: Transaction metadata updated successfully
+          schema:
+            $ref: '#/definitions/TransactionResponse'
+        '400':
+          description: Invalid identifier, empty payload or unsupported field
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: Missing or invalid authentication token
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: The authenticated user does not own this account
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '404':
+          description: Account or transaction not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+parameters:
+  AccountId:
+    in: path
+    name: accountId
+    type: string
+    required: true
+    description: Unique identifier of an account owned by the authenticated user.
+  TransactionId:
+    in: path
+    name: transactionId
+    type: string
+    required: true
+    description: Unique identifier of a transaction in the selected account.
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -149,10 +364,219 @@ definitions:
   LoginResponse:
     type: object
     properties:
-      token:
+      status:
+        type: integer
+        example: 200
+      message:
         type: string
+        example: User successfully logged in
+      body:
+        type: object
+        properties:
+          token:
+            type: string
   UserProfile:
     type: object
     properties:
       userName:
         type: string
+  UserProfileData:
+    type: object
+    properties:
+      id:
+        type: string
+      email:
+        type: string
+        format: email
+      firstName:
+        type: string
+      lastName:
+        type: string
+      userName:
+        type: string
+  UserProfileResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        example: 200
+      message:
+        type: string
+      body:
+        $ref: '#/definitions/UserProfileData'
+  AccountSummary:
+    type: object
+    required:
+      - id
+      - name
+      - maskedNumber
+      - balance
+      - balanceLabel
+      - currency
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+        example: Argent Bank Checking
+      maskedNumber:
+        type: string
+        example: x3448
+      balance:
+        type: number
+        format: double
+        example: 48098.43
+      balanceLabel:
+        type: string
+        example: Available balance
+      currency:
+        type: string
+        minLength: 3
+        maxLength: 3
+        example: USD
+  Transaction:
+    type: object
+    required:
+      - id
+      - accountId
+      - date
+      - description
+      - amount
+      - balance
+      - currency
+      - type
+    properties:
+      id:
+        type: string
+      accountId:
+        type: string
+      date:
+        type: string
+        format: date
+        example: '2020-02-27'
+      description:
+        type: string
+        example: Golden Sun Bakery
+      amount:
+        type: number
+        format: double
+        description: Signed transaction amount. Debits are negative and credits are positive.
+        example: -8.0
+      balance:
+        type: number
+        format: double
+        description: Account balance immediately after the transaction.
+        example: 298.0
+      currency:
+        type: string
+        minLength: 3
+        maxLength: 3
+        example: USD
+      type:
+        type: string
+        example: Electronic
+      category:
+        type: string
+        x-nullable: true
+        example: Food
+      note:
+        type: string
+        x-nullable: true
+        example: Weekly groceries
+  TransactionUpdate:
+    type: object
+    minProperties: 1
+    additionalProperties: false
+    properties:
+      category:
+        type: string
+        x-nullable: true
+        description: User-defined category. Set to null to remove it.
+        maxLength: 100
+      note:
+        type: string
+        x-nullable: true
+        description: User-defined note. Set to null to remove it.
+        maxLength: 500
+  Pagination:
+    type: object
+    required:
+      - page
+      - pageSize
+      - totalItems
+      - totalPages
+    properties:
+      page:
+        type: integer
+        format: int32
+      pageSize:
+        type: integer
+        format: int32
+      totalItems:
+        type: integer
+        format: int32
+      totalPages:
+        type: integer
+        format: int32
+  TransactionListBody:
+    type: object
+    required:
+      - account
+      - month
+      - transactions
+      - pagination
+    properties:
+      account:
+        $ref: '#/definitions/AccountSummary'
+      month:
+        type: string
+        pattern: '^\d{4}-(0[1-9]|1[0-2])$'
+        example: '2020-02'
+      transactions:
+        type: array
+        items:
+          $ref: '#/definitions/Transaction'
+      pagination:
+        $ref: '#/definitions/Pagination'
+  TransactionListResponse:
+    type: object
+    required:
+      - status
+      - message
+      - body
+    properties:
+      status:
+        type: integer
+        example: 200
+      message:
+        type: string
+        example: Transactions retrieved successfully
+      body:
+        $ref: '#/definitions/TransactionListBody'
+  TransactionResponse:
+    type: object
+    required:
+      - status
+      - message
+      - body
+    properties:
+      status:
+        type: integer
+        example: 200
+      message:
+        type: string
+        example: Transaction retrieved successfully
+      body:
+        $ref: '#/definitions/Transaction'
+  ErrorResponse:
+    type: object
+    required:
+      - status
+      - message
+    properties:
+      status:
+        type: integer
+        example: 400
+      message:
+        type: string
+        example: Invalid request
